@@ -34,7 +34,7 @@ class CPU:
 
         """
 
-        while self._pc >> 2 < len(program):
+        while uint32(self._pc >> 2) < len(program):
 
             inst = Decoder(_instruction=program[self._pc >> 2])
 

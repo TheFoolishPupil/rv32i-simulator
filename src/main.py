@@ -22,9 +22,6 @@ def main() -> None:
     result = cpu.execute_program(program)
     file.write_program_results(args.program[:-4] + "_.res", result)
 
-    # file = File(args.program)
-    # print(file.load_program())
-
 
 if __name__ == "__main__":
     main()

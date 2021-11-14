@@ -61,11 +61,11 @@ class Decoder:
 
     @property
     def imm_b(self):
-        b_4_1 = extract_bits(self._instruction, 5, 7)
+        b_4_1 = extract_bits(self._instruction, 4, 8)
         b_10_5 = extract_bits(self._instruction, 6, 25)
         b_11 = extract_bits(self._instruction, 1, 7)
         b_12 = extract_bits(self._instruction, 1, 31)
-        return sign_extend(concatenate_binary_strings(b_12, b_11, b_10_5, b_4_1), 23)
+        return sign_extend((((b_12 << 1 | b_11) << 6 | b_10_5) << 4 | b_4_1), 12) << 1
 
     @property
     def imm_j(self):
