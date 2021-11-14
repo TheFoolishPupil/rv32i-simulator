@@ -153,7 +153,6 @@ class CPU:
                                     self._reg[inst.rd] = self._reg[inst.rs1] >> inst.shamt
 
 
-
                 case Opcode.R_TYPE.value:
                     match inst.funct3:
 
@@ -202,8 +201,10 @@ class CPU:
                 case Opcode.ECALL.value:
                     pass
 
+
                 case _:
                     pass
+
 
             for reg in self._reg:
                 print(str(reg) + " ", end="")

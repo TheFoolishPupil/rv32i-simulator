@@ -3,17 +3,14 @@ from numpy import uint32, int32
 from enum import Enum
 
 
-def sign_extend(value, bits):
-    sign_bit = 1 << (bits - 1)
-    return (value & (sign_bit - 1)) - (value & sign_bit)
-
-
 @dataclass
 class Decoder:
     """Separates instruction into respective fields.
 
     Args:
-        _instruction (uint32): The instruction to decode."""
+        _instruction (uint32): The instruction to decode.
+
+    """
 
     _instruction: uint32
 
@@ -57,7 +54,7 @@ class Decoder:
     def imm_s(self):
         b_4_0 = extract_bits(self._instruction, 6, 7)
         b_11_5 = extract_bits(self._instruction, 7, 25)
-        return concatenate_binary_strings(b_11_5, b_4_0)
+        return sign_extend(b_11_5 << 5 | b_4_0, 12)
 
     @property
     def imm_b(self):
@@ -73,7 +70,7 @@ class Decoder:
         b_11 = extract_bits(self._instruction, 1, 20)
         b_19_12 = extract_bits(self._instruction, 8, 12)
         b_20 = extract_bits(self._instruction, 1, 31)
-        return concatenate_binary_strings(b_20, b_19_12, b_11, b_10_1)
+        return sign_extend((((b_20 << 8) | b_19_12) << 1 | b_11) << 10 | b_10_1, 20)
 
 
 # Helper Functions
@@ -94,22 +91,19 @@ def extract_bits(number: uint32, num_bits: int, start_position: int) -> uint32:
     return (number >> start_position) & (2 ** num_bits - 1)
 
 
-def concatenate_binary_strings(*args: uint32) -> uint32:
-    """Returns the resulting integer from concatenating binary digits.
+def sign_extend(value: uint32, bits: int) -> uint32:
+    """Sign extends provided value by the provided number of bits.
 
     Args:
-        *args (uint32): A series of integers to be concatenated in their binary
-            representation
+        value (uint32): The number to be extended
+        bits (int): The number of bits to extend by
 
     Returns:
-        uint32: The resulting integer from concatenating all binary
-            representations of the provided integers
+        uint32: The resulting value
 
     """
-
-    binary_strings = [bin(arg)[2:] for arg in args]
-    binary_strings.insert(0, "0b")
-    return uint32(int("".join(binary_strings), 2))
+    sign_bit = 1 << (bits - 1)
+    return (value & (sign_bit - 1)) - (value & sign_bit)
 
 
 # Match patterns
