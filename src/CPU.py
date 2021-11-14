@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from numpy import uint32
+from numpy import uint32, int32
 
 from decode import Decoder, Opcode, Funct3, Funct7
 
 
-def uint32list():
+def initlist():
     """Return a default value for the 32 registers."""
-    return [0] * 32
+    return [int32(0)] * 32
 
 
 @dataclass
@@ -21,165 +21,195 @@ class CPU:
     """
 
     _pc: int = 0
-    _reg: list[uint32] = field(default_factory=uint32list)
+    _reg: list[int32] = field(default_factory=initlist)
 
-    def execute_program(self, program: list[uint32]) -> list[uint32]:
+    def execute_program(self, program: list[uint32]) -> list[int32]:
         """Executes a program and returns the resulting register values.
 
         Args:
             program (list[uint32]): The instructions of a program to be executed.
 
         Retuns:
-            list[uint32]: The computed values in the 32 registers.
+            list[int32]: The computed values in the 32 registers.
 
         """
 
-        while self._pc < len(program):
+        while self._pc >> 2 < len(program):
 
-            instruction = Decoder(_instruction=program[self._pc])
+            inst = Decoder(_instruction=program[self._pc >> 2])
 
-            match instruction.opcode:
+            match inst.opcode:
+
                 case Opcode.LUI.value:
-                    print("LUI")
+                    self._reg[inst.rd] = inst.imm_u
 
                 case Opcode.AUIPC.value:
-                    print("AUIPC")
+                    self._pc = self._pc + inst.imm_u - 4
 
                 case Opcode.JAL.value:
-                    print("JAL")
+                    pass
 
                 case Opcode.JALR.value:
-                    print("JALR")
+                    pass
 
 
                 case Opcode.B_TYPE.value:
-                    match instruction.funct3:
+                    match inst.funct3:
 
                         case Funct3.BEQ.value:
-                            print("BEQ")
+                            if self._reg[inst.rs1] == self._reg[inst.rs2]:
+                                self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BNE.value:
-                            print("BNE")
+                            if self._reg[inst.rs1] != self._reg[inst.rs2]:
+                                self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BLT.value:
-                            print("BLT")
+                            if self._reg[inst.rs1] < self._reg[inst.rs2]:
+                                self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BGE.value:
-                            print("BGE")
+                            if self._reg[inst.rs1] > self._reg[inst.rs2]:
+                                self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BLTU.value:
-                            print("BLTU")
+                            if uint32(self._reg[inst.rs1]) < uint32(self._reg[inst.rs2]):
+                                self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BGEU.value:
-                            print("BGEU")
+                            if uint32(self._reg[inst.rs1]) > uint32(self._reg[inst.rs2]):
+                                self._pc = self._pc + inst.imm_b - 4
 
 
                 case Opcode.I_TYPE_LOAD.value:
-                    match instruction.funct3:
+                    match inst.funct3:
 
                         case Funct3.LB.value:
-                            print("LB")
+                            pass
 
                         case Funct3.LH.value:
-                            print("LH")
+                            pass
 
                         case Funct3.LW.value:
-                            print("LW")
+                            pass
 
                         case Funct3.LBU.value:
-                            print("LBU")
+                            pass
 
                         case Funct3.LHU.value:
-                            print("LHU")
+                            pass
 
 
                 case Opcode.S_TYPE.value:
-                    match instruction.funct3:
+                    match inst.funct3:
 
                         case Funct3.SB.value:
-                            print("SB")
+                            pass
 
                         case Funct3.SH.value:
-                            print("SH")
+                            pass
 
                         case Funct3.SW.value:
-                            print("SW")
+                            pass
 
 
                 case Opcode.I_TYPE.value:
-                    match instruction.funct3:
+                    match inst.funct3:
 
                         case Funct3.ADDI.value:
-                            print("ADDI")
+                            self._reg[inst.rd] = self._reg[inst.rs1] + inst.imm_i
 
                         case Funct3.SLTI.value:
-                            print("SLTI")
+                            if self._reg[inst.rs1] < inst.imm_i:
+                                self._reg[inst.rd] = 1
+                            else:
+                                self._reg[inst.rd] = 0
 
                         case Funct3.SLTIU.value:
-                            print("SLTIU")
+                            if uint32(self._reg[inst.rs1]) < uint32(inst.imm_i):
+                                self._reg[inst.rd] = 1
+                            else:
+                                self._reg[inst.rd] = 0
 
                         case Funct3.XORI.value:
-                            print("XORI")
+                            self._reg[inst.rd] = self._reg[inst.rs1] ^ inst.imm_i
 
                         case Funct3.ORI.value:
-                            print("ORI")
+                            self._reg[inst.rd] = self._reg[inst.rs1] | inst.imm_i
 
                         case Funct3.ANDI.value:
-                            print("ANDI")
+                            self._reg[inst.rd] = self._reg[inst.rs1] & inst.imm_i
 
                         case Funct3.SLLI.value:
-                            print("SLLI")
+                            self._reg[inst.rd] = int32(self._reg[inst.rs1] << inst.shamt)
 
                         case Funct3.SRLI_SRAI.value:
-                            match instruction.funct7:
+                            match inst.funct7:
 
                                 case Funct7.SRLI.value:
-                                    print("SRLI")
+                                    self._reg[inst.rd] = int(uint32(self._reg[inst.rs1]) >> inst.shamt)
+
                                 case Funct7.SRAI.value:
-                                    print("SRAI")
+                                    self._reg[inst.rd] = self._reg[inst.rs1] >> inst.shamt
+
 
 
                 case Opcode.R_TYPE.value:
-                    match instruction.funct3:
+                    match inst.funct3:
 
                         case Funct3.ADD_SUB.value:
-                            match instruction.funct7:
+                            match inst.funct7:
 
                                 case Funct7.ADD.value:
-                                    print("ADD")
+                                    self._reg[inst.rd] = self._reg[inst.rs1] + self._reg[inst.rs2]
+
                                 case Funct7.SUB.value:
-                                    print("SUB")
+                                    self._reg[inst.rd] = self._reg[inst.rs1] - self._reg[inst.rs2]
 
                         case Funct3.SLL.value:
-                            print("SLL")
+                            self._reg[inst.rd] = int32(self._reg[inst.rs1] << self._reg[inst.rs2])
 
                         case Funct3.SLT.value:
-                            print("SLT")
+                            if self._reg[inst.rs1] < self._reg[inst.rs2]:
+                                self._reg[inst.rd] = 1
+                            else:
+                                self._ref[inst.rd] = 0
 
                         case Funct3.SLTU.value:
-                            print("SLTU")
+                            if uint32(self._reg[inst.rs1]) < uint32(self._reg[inst.rs2]):
+                                self._reg[inst.rd] = 1
+                            else:
+                                self._ref[inst.rd] = 0
 
                         case Funct3.XOR.value:
-                            print("XOR")
+                            self._reg[inst.rd] = self._reg[inst.rs1] ^ self._reg[inst.rs2]
 
                         case Funct3.SRL_SRA.value:
-                            match instruction.funct7:
+                            match inst.funct7:
                                 case Funct7.SRL.value:
-                                    print("SRL")
+                                    self._reg[inst.rd] = int(uint32(self._reg[inst.rs1]) >> self._reg[inst.rs2])
 
                                 case Funct7.SRA.value:
-                                    print("SRA")
+                                    self._reg[inst.rd] = self._reg[inst.rs1] >> self._reg[inst.rs2]
 
                         case Funct3.OR.value:
-                            print("OR")
+                            self._reg[inst.rd] = self._reg[inst.rs1] | self._reg[inst.rs2]
 
                         case Funct3.AND.value:
-                            print("AND")
+                            self._reg[inst.rd] = self._reg[inst.rs1] & self._reg[inst.rs2]
 
 
                 case Opcode.ECALL.value:
-                    print("ECALL")
+                    pass
 
-            self._pc += 1
+                case _:
+                    pass
+
+            for reg in self._reg:
+                print(str(reg) + " ", end="")
+            print()
+
+            self._pc += 4
 
         return self._reg
+

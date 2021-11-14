@@ -1,6 +1,11 @@
 from dataclasses import dataclass
-from numpy import uint32
+from numpy import uint32, int32
 from enum import Enum
+
+
+def sign_extend(value, bits):
+    sign_bit = 1 << (bits - 1)
+    return (value & (sign_bit - 1)) - (value & sign_bit)
 
 
 @dataclass
@@ -38,15 +43,15 @@ class Decoder:
 
     @property
     def shamt(self):
-        return extract_bits(self._instruction, 5, 15)
+        return extract_bits(self._instruction, 5, 20)
 
     @property
     def imm_i(self):
-        return extract_bits(self._instruction, 12, 20)
+        return sign_extend(extract_bits(self._instruction, 12, 20), 12)
 
     @property
     def imm_u(self):
-        return extract_bits(self._instruction, 5, 20)
+        return int32(extract_bits(self._instruction, 20, 12) << 12)
 
     @property
     def imm_s(self):
@@ -60,7 +65,7 @@ class Decoder:
         b_10_5 = extract_bits(self._instruction, 6, 25)
         b_11 = extract_bits(self._instruction, 1, 7)
         b_12 = extract_bits(self._instruction, 1, 31)
-        return concatenate_binary_strings(b_12, b_11, b_10_5, b_4_1)
+        return sign_extend(concatenate_binary_strings(b_12, b_11, b_10_5, b_4_1), 23)
 
     @property
     def imm_j(self):

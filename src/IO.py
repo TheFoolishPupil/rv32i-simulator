@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from numpy import uint32, frombuffer
+from numpy import uint32, frombuffer, array
 
 
 @dataclass
@@ -24,4 +24,4 @@ class File:
         """Writes the resulting uint32 register list to a file."""
 
         with open(path, "wb") as f:
-            f.write(bytearray(reg))
+            f.write(array(reg, dtype="uint32").tobytes())

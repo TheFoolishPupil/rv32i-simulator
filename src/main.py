@@ -9,6 +9,8 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+cpu = CPU()
+
 
 def main() -> None:
     """Executes a program and saves the resulting registers to a file."""
@@ -19,6 +21,9 @@ def main() -> None:
     cpu = CPU()
     result = cpu.execute_program(program)
     file.write_program_results(args.program[:-4] + "_.res", result)
+
+    # file = File(args.program)
+    # print(file.load_program())
 
 
 if __name__ == "__main__":
