@@ -9,16 +9,15 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-cpu = CPU()
-
 
 def main() -> None:
     """Executes a program and saves the resulting registers to a file."""
 
     # Load program and run it through the cpu, store the resulting registers.
     file = File(args.program)
-    program = file.load_program()
     cpu = CPU()
+
+    program = file.load_program()
     result = cpu.execute_program(program)
     file.write_program_results(args.program[:-4] + "_.res", result)
 
