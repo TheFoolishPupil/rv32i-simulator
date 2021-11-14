@@ -91,7 +91,7 @@ def extract_bits(number: uint32, num_bits: int, start_position: int) -> uint32:
     return (number >> start_position) & (2 ** num_bits - 1)
 
 
-def sign_extend(value: uint32, bits: int) -> uint32:
+def sign_extend(value: uint32, bits: int) -> int32:
     """Sign extends provided value by the provided number of bits.
 
     Args:
@@ -103,7 +103,7 @@ def sign_extend(value: uint32, bits: int) -> uint32:
 
     """
     sign_bit = 1 << (bits - 1)
-    return (value & (sign_bit - 1)) - (value & sign_bit)
+    return int32((value & (sign_bit - 1)) - (value & sign_bit))
 
 
 # Match patterns
