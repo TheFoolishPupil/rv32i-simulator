@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from numpy import uint8, uint16, uint32
+from numpy import uint8, int8, uint16, int16, uint32, int32
 
 
 def initmem():
@@ -18,9 +18,12 @@ class Memory:
         self._mainmem[addr] = data
         return None
 
-    def load_byte(self, addr: uint32) -> uint8:
+    def load_byte(self, addr: uint32, signed: bool = True) -> int8:
         """Load and return a single byte from memory."""
-        return self._mainmem[addr]
+        if signed:
+            return int8(self._mainmem[addr])
+        else:
+            return uint8(self._mainmem[addr])
 
     def store_halfword(self, addr: uint32, data: uint16) -> None:
         """Stores a 16-bit halfword in memory."""
@@ -32,12 +35,14 @@ class Memory:
 
         return None
 
-    def load_halfword(self, addr: uint32) -> uint16:
+    def load_halfword(self, addr: uint32, signed: bool = True) -> int16:
         """Load and return a 16-bit halfword from memory"""
         d0 = self._mainmem[addr]
         d1 = self._mainmem[addr + 1]
-
-        return uint16(d1 << 8 | d0)
+        if signed:
+            return int16(d1 << 8 | d0)
+        else:
+            return uint16(d1 << 8 | d0)
 
     def store_word(self, addr: uint32, data: uint32) -> None:
         """Stores a 32-bit word in memory."""
@@ -62,4 +67,4 @@ class Memory:
 
         print(d0, d1, d2, d3)
 
-        return uint32((((d3 << 8 | d2) << 8 | d1) << 8 | d0))
+        return int32((((d3 << 8 | d2) << 8 | d1) << 8 | d0))

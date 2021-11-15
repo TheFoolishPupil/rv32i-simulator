@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from numpy import uint32, int32, seterr
+from numpy import uint32, int32, uint16, int16, uint8, int8, seterr
 
 from decode import Decoder, Opcode, Funct3, Funct7
 from memory import Memory
@@ -27,7 +27,7 @@ class CPU:
     _pc: int = 0
     _reg: list[int32] = field(default_factory=initlist)
     _mem: Memory = Memory()
-    
+
     def execute_program(self, program: list[uint32]) -> list[int32]:
         """Executes a program and returns the resulting register values.
 
@@ -96,32 +96,35 @@ class CPU:
                     match inst.funct3:
 
                         case Funct3.LB.value:
-                            pass
+                            self._reg[inst.rd] = self._mem.load_byte(inst.rs1 + inst.imm_i)
 
                         case Funct3.LH.value:
-                            pass
+                            self._reg[inst.rd] = self._mem.load_halfword(inst.rs1 + inst.imm_i)
 
-                        case Funct3.LW.value:
-                            pass
+                        case Funct3.LW.value: # signed?
+                            self._reg[inst.rd] = self._mem.load_word(inst.rs1 + inst.imm_i)
 
                         case Funct3.LBU.value:
-                            pass
+                            self._reg[inst.rd] = self._mem.load_byte(inst.rs1 + inst.imm_i, signed=False)
 
                         case Funct3.LHU.value:
-                            pass
+                            self._reg[inst.rd] = self._mem.load_halfword(inst.rs1 + inst.imm_i, signed=False)
 
 
                 case Opcode.S_TYPE.value:
                     match inst.funct3:
 
                         case Funct3.SB.value:
-                            pass
+                            byte = uint8(self._reg[inst.rs2] & 0xFF)
+                            self._mem.store_byte(addr=inst.rs1+inst.imm_s, data=byte)
 
                         case Funct3.SH.value:
-                            pass
+                            halfword = uint16(self._reg[inst.rs2] & 0xFFFF)
+                            self._mem.store_halfword(addr=inst.rs1+inst.imm_s, data=halfword)
 
                         case Funct3.SW.value:
-                            pass
+                            word = uint32(self._reg[inst.rs2])
+                            self._mem.store_halfword(addr=inst.rs1+inst.imm_s, data=word)
 
 
                 case Opcode.I_TYPE.value:
@@ -216,7 +219,7 @@ class CPU:
                 case _:
                     pass
 
-
+            print()
             for reg in self._reg:
                 print(str(reg) + " ", end="")
             print()
