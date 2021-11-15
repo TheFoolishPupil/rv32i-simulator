@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from numpy import uint32, int32, seterr
 
 from decode import Decoder, Opcode, Funct3, Funct7
+from memory import Memory
 
 # ignore overflow warnings. Overflows are expected.
 seterr(over="ignore")
@@ -25,7 +26,8 @@ class CPU:
 
     _pc: int = 0
     _reg: list[int32] = field(default_factory=initlist)
-
+    _mem: Memory = Memory()
+    
     def execute_program(self, program: list[uint32]) -> list[int32]:
         """Executes a program and returns the resulting register values.
 
