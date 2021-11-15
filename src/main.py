@@ -3,6 +3,11 @@ import argparse
 from CPU import CPU
 from IO import File
 
+# import warnings
+
+# # suppress warnings
+# warnings.filterwarnings("ignore")
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--program", help="path to binary file containing program to execute"

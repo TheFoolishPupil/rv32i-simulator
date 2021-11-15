@@ -1,7 +1,10 @@
 from dataclasses import dataclass, field
-from numpy import uint32, int32
+from numpy import uint32, int32, seterr
 
 from decode import Decoder, Opcode, Funct3, Funct7
+
+# ignore overflow warnings. Overflows are expected.
+seterr(over="ignore")
 
 
 def initlist():
