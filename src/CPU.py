@@ -43,17 +43,23 @@ class CPU:
 
             match inst.opcode:
 
+
                 case Opcode.LUI.value:
                     self._reg[inst.rd] = inst.imm_u
+
 
                 case Opcode.AUIPC.value:
                     self._pc = self._pc + inst.imm_u - 4
 
+
                 case Opcode.JAL.value:
-                    pass
+                    self._reg[inst.rd] = self._pc + 4
+                    self._pc = self._pc + inst.imm_j - 4
+
 
                 case Opcode.JALR.value:
-                    pass
+                    self._reg[inst.rd] = self._pc + 4
+                    self._pc = inst.rs1 + inst.imm_i - 4
 
 
                 case Opcode.B_TYPE.value:
