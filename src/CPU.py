@@ -225,7 +225,10 @@ class CPU:
 
 
                 case Opcode.ECALL.value:
-                    pass
+                    # TODO: implement other ecalls
+
+                    # ECALL 10
+                    return self._reg
 
 
                 case _:
