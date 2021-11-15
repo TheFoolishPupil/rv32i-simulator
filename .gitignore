@@ -2,5 +2,6 @@
 .python-version
 __pycache__/
 .vscode/
+.idea/
 
 tests/*/*_.res
