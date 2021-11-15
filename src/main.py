@@ -17,7 +17,7 @@ def main() -> None:
     # Load program and run it through the cpu, store the resulting registers.
     file = File(args.program)
     cpu = CPU()
-    print(cpu._mem)
+    #print(cpu._mem)
     program = file.load_program()
     result = cpu.execute_program(program)
     file.write_program_results(args.program[:-4] + "_.res", result)

@@ -28,6 +28,17 @@ class CPU:
     _reg: list[int32] = field(default_factory=initlist)
     _mem: Memory = Memory()
 
+
+    def _writeToRegister(self, val: uint32, instruction: uint32) -> None:
+        """Writes value to rd Register
+        Args:
+            val (uint32) : value to be written
+            instruction (uint32) : RISC-V instruction
+
+        """
+        if instruction.rd !=0:
+            self._reg[instruction.rd] = val
+
     def execute_program(self, program: list[uint32]) -> list[int32]:
         """Executes a program and returns the resulting register values.
 
@@ -47,20 +58,21 @@ class CPU:
 
 
                 case Opcode.LUI.value:
-                    self._reg[inst.rd] = inst.imm_u
+                    self._writeToRegister(inst.imm_u, inst)
 
 
                 case Opcode.AUIPC.value:
-                    self._pc = self._pc + inst.imm_u - 4
+                    self._writeToRegister(self._pc + inst.imm_u - 4, inst)
+
 
 
                 case Opcode.JAL.value:
-                    self._reg[inst.rd] = self._pc + 4
+                    self._writeToRegister(self._pc + 4, inst)
                     self._pc = self._pc + inst.imm_j - 4
 
 
                 case Opcode.JALR.value:
-                    self._reg[inst.rd] = self._pc + 4
+                    self._writeToRegister(self._pc + 4, inst)
                     self._pc = inst.rs1 + inst.imm_i - 4
 
 
@@ -96,19 +108,19 @@ class CPU:
                     match inst.funct3:
 
                         case Funct3.LB.value:
-                            self._reg[inst.rd] = self._mem.load_byte(inst.rs1 + inst.imm_i)
+                            self._writeToRegister(self._mem.load_byte(inst.rs1 + inst.imm_i), inst)
 
                         case Funct3.LH.value:
-                            self._reg[inst.rd] = self._mem.load_halfword(inst.rs1 + inst.imm_i)
+                            self._writeToRegister(self._mem.load_halfword(inst.rs1 + inst.imm_i), inst)
 
                         case Funct3.LW.value: # signed?
-                            self._reg[inst.rd] = self._mem.load_word(inst.rs1 + inst.imm_i)
+                            self._writeToRegister(self._mem.load_word(inst.rs1 + inst.imm_i), inst)
 
                         case Funct3.LBU.value:
-                            self._reg[inst.rd] = self._mem.load_byte(inst.rs1 + inst.imm_i, signed=False)
+                            self._writeToRegister(self._mem.load_byte(inst.rs1 + inst.imm_i, signed=False), inst)
 
                         case Funct3.LHU.value:
-                            self._reg[inst.rd] = self._mem.load_halfword(inst.rs1 + inst.imm_i, signed=False)
+                            self._writeToRegister(self._mem.load_halfword(inst.rs1 + inst.imm_i, signed=False), inst)
 
 
                 case Opcode.S_TYPE.value:
@@ -131,40 +143,40 @@ class CPU:
                     match inst.funct3:
 
                         case Funct3.ADDI.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] + inst.imm_i
+                            self._writeToRegister(self._reg[inst.rs1] + inst.imm_i, inst)
 
                         case Funct3.SLTI.value:
                             if self._reg[inst.rs1] < inst.imm_i:
-                                self._reg[inst.rd] = 1
+                                self._writeToRegister(1, inst)
                             else:
-                                self._reg[inst.rd] = 0
+                                self._writeToRegister(0, inst)
 
                         case Funct3.SLTIU.value:
                             if uint32(self._reg[inst.rs1]) < uint32(inst.imm_i):
-                                self._reg[inst.rd] = 1
+                                self._writeToRegister(1, inst)
                             else:
-                                self._reg[inst.rd] = 0
+                                self._writeToRegister(0, inst)
 
                         case Funct3.XORI.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] ^ inst.imm_i
+                            self._writeToRegister(self._reg[inst.rs1] ^ inst.imm_i, inst)
 
                         case Funct3.ORI.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] | inst.imm_i
+                            self._writeToRegister(self._reg[inst.rs1] | inst.imm_i, inst)
 
                         case Funct3.ANDI.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] & inst.imm_i
+                            self._writeToRegister(self._reg[inst.rs1] & inst.imm_i, inst)
 
                         case Funct3.SLLI.value:
-                            self._reg[inst.rd] = int32(self._reg[inst.rs1] << inst.shamt)
+                            self._writeToRegister(int32(self._reg[inst.rs1] << inst.shamt), inst)
 
                         case Funct3.SRLI_SRAI.value:
                             match inst.funct7:
 
                                 case Funct7.SRLI.value:
-                                    self._reg[inst.rd] = int(uint32(self._reg[inst.rs1]) >> inst.shamt)
+                                    self._writeToRegister(int(uint32(self._reg[inst.rs1]) >> inst.shamt), inst)
 
                                 case Funct7.SRAI.value:
-                                    self._reg[inst.rd] = self._reg[inst.rs1] >> inst.shamt
+                                    self._writeToRegister(self._reg[inst.rs1] >> inst.shamt, inst)
 
 
                 case Opcode.R_TYPE.value:
@@ -174,42 +186,42 @@ class CPU:
                             match inst.funct7:
 
                                 case Funct7.ADD.value:
-                                    self._reg[inst.rd] = self._reg[inst.rs1] + self._reg[inst.rs2]
+                                    self._writeToRegister(self._reg[inst.rs1] + self._reg[inst.rs2], inst)
 
                                 case Funct7.SUB.value:
-                                    self._reg[inst.rd] = self._reg[inst.rs1] - self._reg[inst.rs2]
+                                    self._writeToRegister(self._reg[inst.rs1] - self._reg[inst.rs2], inst)
 
                         case Funct3.SLL.value:
-                            self._reg[inst.rd] = int32(self._reg[inst.rs1] << self._reg[inst.rs2])
+                            self._writeToRegister(int32(self._reg[inst.rs1] << self._reg[inst.rs2]), inst)
 
                         case Funct3.SLT.value:
                             if self._reg[inst.rs1] < self._reg[inst.rs2]:
-                                self._reg[inst.rd] = 1
+                                self._writeToRegister(1, inst)
                             else:
-                                self._ref[inst.rd] = 0
+                                self._writeToRegister(0, inst)
 
                         case Funct3.SLTU.value:
                             if uint32(self._reg[inst.rs1]) < uint32(self._reg[inst.rs2]):
-                                self._reg[inst.rd] = 1
+                                self._writeToRegister(1, inst)
                             else:
-                                self._ref[inst.rd] = 0
+                                self._writeToRegister(0, inst)
 
                         case Funct3.XOR.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] ^ self._reg[inst.rs2]
+                            self._writeToRegister(self._reg[inst.rs1] ^ self._reg[inst.rs2], inst)
 
                         case Funct3.SRL_SRA.value:
                             match inst.funct7:
                                 case Funct7.SRL.value:
-                                    self._reg[inst.rd] = int(uint32(self._reg[inst.rs1]) >> self._reg[inst.rs2])
+                                    self._writeToRegister(int(uint32(self._reg[inst.rs1]) >> self._reg[inst.rs2]), inst)
 
                                 case Funct7.SRA.value:
-                                    self._reg[inst.rd] = self._reg[inst.rs1] >> self._reg[inst.rs2]
+                                    self._writeToRegister(self._reg[inst.rs1] >> self._reg[inst.rs2], inst)
 
                         case Funct3.OR.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] | self._reg[inst.rs2]
+                            self._writeToRegister(self._reg[inst.rs1] | self._reg[inst.rs2], inst)
 
                         case Funct3.AND.value:
-                            self._reg[inst.rd] = self._reg[inst.rs1] & self._reg[inst.rs2]
+                            self._writeToRegister(self._reg[inst.rs1] & self._reg[inst.rs2], inst)
 
 
                 case Opcode.ECALL.value:
