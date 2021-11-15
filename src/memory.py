@@ -65,6 +65,4 @@ class Memory:
         d2 = self._mainmem[addr + 2]
         d3 = self._mainmem[addr + 3]
 
-        print(d0, d1, d2, d3)
-
         return int32((((d3 << 8 | d2) << 8 | d1) << 8 | d0))

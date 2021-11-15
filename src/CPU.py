@@ -234,10 +234,10 @@ class CPU:
                 case _:
                     pass
 
-            print()
-            for reg in self._reg:
-                print(str(reg) + " ", end="")
-            print()
+            # print()
+            # for reg in self._reg:
+            #     print(str(reg) + " ", end="")
+            # print()
 
             self._pc += 4
 
