@@ -4,12 +4,7 @@ from numpy import uint32, frombuffer, array
 
 @dataclass
 class File:
-    """Performs IO operations
-
-    Attributes:
-        path (str): A file path
-
-    """
+    """Performs IO operations"""
 
     _path: str
 

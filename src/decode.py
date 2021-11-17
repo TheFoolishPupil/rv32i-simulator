@@ -7,8 +7,8 @@ from enum import Enum
 class Decoder:
     """Separates instruction into respective fields.
 
-    Args:
-        _instruction (uint32): The instruction to decode.
+    Attr:
+        _instruction (uint32): The RISCV instruction to decode.
 
     """
 
@@ -78,7 +78,7 @@ def extract_bits(number: uint32, num_bits: int, start_position: int) -> uint32:
     """Extracts specified bits from and integer.
 
     Args:
-        no (uint32): The number from which to extract bits
+        number (uint32): The number from which to extract bits
         num_bits (int): The number of bits to extract
         start_position (int): The start position from which to extract the bits.
             0 indexed and references the least significant bit.
