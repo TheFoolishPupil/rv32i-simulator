@@ -52,7 +52,7 @@ class Decoder:
 
     @property
     def imm_s(self):
-        b_4_0 = extract_bits(self._instruction, 6, 7)
+        b_4_0 = extract_bits(self._instruction, 5, 7)
         b_11_5 = extract_bits(self._instruction, 7, 25)
         return sign_extend(b_11_5 << 5 | b_4_0, 12)
 

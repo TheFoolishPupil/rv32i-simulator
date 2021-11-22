@@ -97,8 +97,8 @@ class Memory:
 
         return None
 
-    def load_word(self, addr: uint32) -> uint32:
-        """Load and return a 16-bit halfword from memory
+    def load_word(self, addr: uint32) -> int32:
+        """Load and return a 32-bit word from memory
 
         Args:
             addr (uint32): The memory address to load from.
