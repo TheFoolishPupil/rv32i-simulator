@@ -9,7 +9,7 @@ class File:
     _path: str
 
     def load_program(self) -> list[uint8]:
-        """Returns a list of np.uint32, read from the provided file path."""
+        """Returns a list of np.uint8, read from the provided file path."""
 
         with open(self._path, "rb") as f:
             data = f.read()

@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 from numpy import uint32, int32, uint16, uint8, seterr
 
-from time import sleep
-
 from decode import Decoder, Opcode, Funct3, Funct7
 from memory import Memory, MEMORY_SIZE
 
@@ -67,7 +65,7 @@ class CPU:
                     self._write_to_register(inst.imm_u, inst)
 
                 case Opcode.AUIPC.value:
-                    self._write_to_register(self._pc + inst.imm_u - 4, inst)
+                    self._write_to_register(self._pc + inst.imm_u, inst)
 
                 case Opcode.JAL.value:
                     self._write_to_register(self._pc + 4, inst)
@@ -240,7 +238,6 @@ class CPU:
             print()
             # print(self._mem._mem[256:350])
             print()
-
             self._pc += 4
-            
+
         return self._reg

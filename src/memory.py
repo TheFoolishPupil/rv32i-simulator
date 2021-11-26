@@ -20,6 +20,12 @@ class Memory:
         return len(self._mem)
 
     def copy_to_mem(self, data: list[uint8]):
+        """Copies elements from provided list into begining of memory.
+
+        Args:
+            data (list[uint8]): The data to copy over.
+
+        """
         i = 0
         for byte in data:
             self._mem[i] = byte
