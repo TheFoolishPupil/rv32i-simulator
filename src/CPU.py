@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from numpy import uint32, int32, uint16, uint8, seterr
 
+from time import sleep
+
 from decode import Decoder, Opcode, Funct3, Funct7
 from memory import Memory, MEMORY_SIZE
 
@@ -26,6 +28,7 @@ class CPU:
     _reg: list[int32] = field(default_factory=init_registers)
     _mem: Memory = Memory()
 
+
     def _write_to_register(self, val: int, instruction: Decoder) -> None:
         """Writes value to rd Register.
 
@@ -40,7 +43,7 @@ class CPU:
         if instruction.rd != 0:
             self._reg[instruction.rd] = val
 
-    def execute_program(self, program: list[uint32]) -> list[int32]:
+    def execute_program(self, program: list[uint8]) -> list[int32]:
         """Executes a program and returns the resulting register values.
 
         Args:
@@ -51,9 +54,12 @@ class CPU:
 
         """
 
-        while uint32(self._pc >> 2) < len(program):
+        # Load program into memory
+        self._mem.copy_to_mem(data=program)
 
-            inst = Decoder(_instruction=program[self._pc >> 2])
+        while uint32(self._pc) < len(self._mem):
+
+            inst = Decoder(_instruction=self._mem.load_word(self._pc))
 
             match inst.opcode:
 
@@ -236,5 +242,5 @@ class CPU:
             print()
 
             self._pc += 4
-
+            
         return self._reg

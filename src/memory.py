@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from numpy import uint8, int8, uint16, int16, uint32, int32
+from numpy import uint8, int8, uint16, int16, uint32, int32, array
 
 MEMORY_SIZE = 2 ** 20
 
@@ -15,6 +15,15 @@ class Memory:
     """Serves as simultaor memory with associated read and write functions."""
 
     _mem: list[uint8] = field(default_factory=init_mem)
+
+    def __len__(self):
+        return len(self._mem)
+
+    def copy_to_mem(self, data: list[uint8]):
+        i = 0
+        for byte in data:
+            self._mem[i] = byte
+            i += 1
 
     def store_byte(self, addr: uint32, data: uint8) -> None:
         """Stores a single byte in memory.

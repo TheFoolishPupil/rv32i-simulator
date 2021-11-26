@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from numpy import uint32, frombuffer, array
+from numpy import uint8, uint32, frombuffer, array
 
 
 @dataclass
@@ -8,12 +8,12 @@ class File:
 
     _path: str
 
-    def load_program(self) -> list[uint32]:
+    def load_program(self) -> list[uint8]:
         """Returns a list of np.uint32, read from the provided file path."""
 
         with open(self._path, "rb") as f:
             data = f.read()
-            return frombuffer(buffer=data, dtype=uint32)
+            return frombuffer(buffer=data, dtype=uint8)
 
     def write_program_results(self, path: str, reg: list[uint32]) -> None:
         """Writes the resulting uint32 register list to a file."""
