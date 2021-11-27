@@ -60,6 +60,8 @@ class CPU:
 
             inst = Decoder(_instruction=self._mem.load_word(self._pc))
 
+            print(f"PC: {self._pc}\t", end="")
+
             match inst.opcode:
 
                 case Opcode.LUI.value:
@@ -92,7 +94,9 @@ class CPU:
                                 self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BGE.value:
-                            if self._reg[inst.rs1] > self._reg[inst.rs2]:
+                            print(f"BGE: rs1 {self._reg[inst.rs1]}, rs2 {self._reg[inst.rs2]}, imm_B {inst.imm_b}")
+                            if self._reg[inst.rs1] >= self._reg[inst.rs2]:
+                                print("BIGGER")
                                 self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BLTU.value:
@@ -100,7 +104,7 @@ class CPU:
                                 self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BGEU.value:
-                            if uint32(self._reg[inst.rs1]) > uint32(self._reg[inst.rs2]):
+                            if uint32(self._reg[inst.rs1]) >= uint32(self._reg[inst.rs2]):
                                 self._pc = self._pc + inst.imm_b - 4
 
                 case Opcode.I_TYPE_LOAD.value:
@@ -228,11 +232,12 @@ class CPU:
                 case _:
                     pass
 
-            # for reg in self._reg:
-            #     print(str(reg) + " ", end="")
-            # print()
-            # # print(self._mem._mem[256:350])
-            # print()
+
+            for reg in self._reg:
+                print(str(reg) + " ", end="")
+            print()
+            # print(self._mem._mem[256:350])
+            print()
             self._pc += 4
 
         return self._reg

@@ -62,7 +62,7 @@ class Decoder:
         b_10_5 = extract_bits(self._instruction, 6, 25)
         b_11 = extract_bits(self._instruction, 1, 7)
         b_12 = extract_bits(self._instruction, 1, 31)
-        return sign_extend((((b_12 << 1 | b_11) << 6 | b_10_5) << 4 | b_4_1), 12) << 1
+        return sign_extend((((b_12 << 1 | b_11) << 6 | b_10_5) << 4 | b_4_1) << 1, 11)
 
     @property
     def imm_j(self):
