@@ -62,8 +62,6 @@ class CPU:
 
             inst = Decoder(_instruction=self._mem.load_word(self._pc))
 
-            print(f"PC: {self._pc}\t", end="")
-
             match inst.opcode:
 
                 case Opcode.LUI.value:
@@ -96,9 +94,7 @@ class CPU:
                                 self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BGE.value:
-                            print(f"BGE: rs1 {self._reg[inst.rs1]}, rs2 {self._reg[inst.rs2]}, imm_B {inst.imm_b}")
                             if self._reg[inst.rs1] >= self._reg[inst.rs2]:
-                                print("BIGGER")
                                 self._pc = self._pc + inst.imm_b - 4
 
                         case Funct3.BLTU.value:
