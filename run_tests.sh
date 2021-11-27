@@ -7,8 +7,9 @@ reset=`tput sgr0`
 
 complete=1
 
-scriptDir=$(dirname -- "$(greadlink -f -- "$BASH_SOURCE")")
-cd "$scriptDir/tests"
+full_path=$(realpath $0)
+dir_path=$(dirname $full_path)
+cd "$dir_path/tests"
 
 echo -e "\n${bold}Running Tests 🏃${reset}\n"
 for dir in */
@@ -18,7 +19,7 @@ do
     for f in *.bin
     do
         # Run the simluator on the task file
-        ERROR=$(python ../../src/main.py --program $f 2>&1 > /dev/null)
+        ERROR=$($1 ../../src/main.py --program $f 2>&1 > /dev/null)
         if [[ -n "$ERROR" ]] ; then
             complete=0
             # Print error
