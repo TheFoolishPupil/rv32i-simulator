@@ -114,4 +114,4 @@ main:
 	addi	sp,sp,32
 	jr	ra
 	.size	main, .-main
-	.ident	"GCC: (SiFive GCC 10.1.0-2020.08.2) 10.1.0"
+	.ident	"GCC: (GNU) 11.1.0"

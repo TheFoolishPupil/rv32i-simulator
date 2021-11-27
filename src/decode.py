@@ -70,7 +70,9 @@ class Decoder:
         b_11 = extract_bits(self._instruction, 1, 20)
         b_19_12 = extract_bits(self._instruction, 8, 12)
         b_20 = extract_bits(self._instruction, 1, 31)
-        return sign_extend((((b_20 << 8) | b_19_12) << 1 | b_11) << 10 | b_10_1, 20)
+        return sign_extend(
+            ((((b_20 << 8) | b_19_12) << 1 | b_11) << 10 | b_10_1) << 1, 20
+        )
 
 
 # Helper Functions
