@@ -7,8 +7,9 @@ reset=`tput sgr0`
 
 complete=1
 
-scriptDir=$(dirname -- "$(greadlink -f -- "$BASH_SOURCE")")
-cd "$scriptDir/tests"
+full_path=$(realpath $0)
+dir_path=$(dirname $full_path)
+cd "$dir_path/tests"
 
 echo -e "\n${bold}Running Tests 🏃${reset}\n"
 for dir in */
