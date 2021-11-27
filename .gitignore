@@ -4,4 +4,6 @@ __pycache__/
 .vscode/
 .idea/
 
+src/Comparison.py
+
 tests/*/*_.res
