@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from numpy import uint32, int32, uint16, uint8, seterr
 
+from time import sleep
+
 from decode import Decoder, Opcode, Funct3, Funct7
 from memory import Memory, MEMORY_SIZE
 
@@ -76,7 +78,7 @@ class CPU:
 
                 case Opcode.JALR.value:
                     self._write_to_register(self._pc + 4, inst)
-                    self._pc = ((inst.rs1 + inst.imm_i) & 0xFFFFFFFE) - 4
+                    self._pc = ((self._reg[inst.rs1] + inst.imm_i) & 0xFFFFFFFE) - 4
 
                 case Opcode.B_TYPE.value:
                     match inst.funct3:
@@ -232,12 +234,6 @@ class CPU:
                 case _:
                     pass
 
-
-            for reg in self._reg:
-                print(str(reg) + " ", end="")
-            print()
-            # print(self._mem._mem[256:350])
-            print()
             self._pc += 4
 
         return self._reg

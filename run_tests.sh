@@ -13,7 +13,7 @@ cd "$scriptDir/tests"
 echo -e "\n${bold}Running Tests 🏃${reset}\n"
 for dir in */
 do
-    echo -e "${bold}Task ${dir:4:1}${reset}"
+    echo -e "${bold}${dir%?}${reset}"
     cd "$dir"
     for f in *.bin
     do
