@@ -4,10 +4,11 @@
 
 In order to use the RISCV simulator you must use python version 3.10.x with the modules provided in `requirements.txt` installed. Additionally, the convenient test script `run_tests.sh` assumes that such a python environment is activated when run. General steps for getting everything in place are provided below:
 
-1. Clone the repository and change directory with `git clone https://github.com/TheFoolishPupil/rv32i-simulator.git & cd rv32i-simulator`
+1. Clone the repository and change directory with `git clone https://github.com/TheFoolishPupil/rv32i-simulator.git && cd rv32i-simulator`
 2. Install python 3.10 on your machine, see [here](https://www.python.org/downloads/release/python-3100/)
 3. Create a virtual environment with `\your\path\to\python3.10\bin\python -m venv .venv`
 4. Active the environment with `source .venv/bin/active`
+5. Install requirements with `pip install -r requirements.txt`
 
 Your system should now be ready to use the simulator!
 
