@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 from numpy import uint32, int32, uint16, uint8, seterr
 
-from time import sleep
-
 from decode import Decoder, Opcode, Funct3, Funct7
 from memory import Memory, MEMORY_SIZE
 

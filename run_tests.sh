@@ -19,7 +19,7 @@ do
     for f in *.bin
     do
         # Run the simluator on the task file
-        ERROR=$(python ../../src/main.py --program $f 2>&1 > /dev/null)
+        ERROR=$(python ../../src/simulator.py --program $f 2>&1 > /dev/null)
         if [[ -n "$ERROR" ]] ; then
             complete=0
             # Print error

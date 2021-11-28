@@ -4,9 +4,22 @@ from numpy import uint8, uint32, frombuffer, array
 
 @dataclass
 class File:
-    """Performs IO operations"""
+    """Performs IO operations
+
+    Args:
+        _path (str): a path to a .bin file
+
+    """
 
     _path: str
+
+    @property
+    def save_path(self):
+        return self._path[:-4] + "_.res"
+
+    def set_program(self, program_path: str):
+        """Sets the path attribute, pointig File object to other file path."""
+        self._path = program_path
 
     def load_program(self) -> list[uint8]:
         """Returns a list of np.uint8, read from the provided file path."""
