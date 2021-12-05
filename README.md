@@ -20,4 +20,4 @@ Firstly, there is a convenient test script prepared for you. It will iterate ove
 
 ### Command Line
 
-You can call the simulator directly from the command line as well. to do this you merely call `src/main.py` and provide a path to a program that you wish to execute. For example: `python src/main --program /tests/task3/loop.bin`. A result file will be generated in the same directory that contains the program, with the format `<filename>_.res`. This file contains the content of the registers post-execution. It can be directly compared with provided `.res` files to test the execution.
+You can call the simulator directly from the command line as well. to do this you merely call `src/simulator.py` and provide a path to a program that you wish to execute. For example: `python src/simulator.py --program tests/task3/loop.bin`. A result file will be generated in the same directory that contains the program, with the format `<filename>_.res`. This file contains the content of the registers post-execution. It can be directly compared with provided `.res` files to test the execution.

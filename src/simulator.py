@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 from CPU import CPU
 from IO import File
-from memory import Memory
 
 
 @dataclass
